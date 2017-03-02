@@ -3,25 +3,28 @@ package main
 import (
 	"fmt"
 
-	zmq "github.com/alecthomas/gozmq"
+	zmq "github.com/pebbe/zmq2"
 )
 
 func main() {
-	context, _ := zmq.NewContext()
-	socket, _ := context.NewSocket(zmq.REP)
-	defer context.Close()
-	defer socket.Close()
-	socket.Bind("tcp://*:5555")
+	//  Socket to talk to clients
+	responder, _ := zmq.NewSocket(zmq.REP)
+	defer responder.Close()
+	responder.Bind("tcp://*:5555")
+	fmt.Println("Start reverse polish worker")
+	fmt.Println("...to stop worker hit ctrl-c")
 
-	// Wait for messages
 	for {
-		msg, _ := socket.Recv(0)
-		println("Received ", string(msg))
+		//  Wait for next request from client
+		msg, _ := responder.Recv(0)
+		fmt.Println("Received ", msg)
 
+		//  Make calculations
 		res, _ := calculate(string(msg))
 
-		// send reply back to client
+		//  Send reply back to client
 		reply := fmt.Sprintf("%f", res)
-		socket.Send([]byte(reply), 0)
+		responder.Send(reply, 0)
+		fmt.Println("Sent ", reply)
 	}
 }
