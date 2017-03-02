@@ -65,5 +65,5 @@ func calculate(expression string) (float32, error) {
 		res, _, _ := pop(stack)
 		return res, nil
 	}
-	return 0, fmt.Errorf("Expression is not compnete and can't be parsed")
+	return 0, fmt.Errorf("Expression is not complete and can't be parsed")
 }
