@@ -13,17 +13,20 @@ func main() {
 	responder.Bind("tcp://*:5555")
 	fmt.Println("Start reverse polish worker")
 	fmt.Println("...to stop worker hit ctrl-c")
-
+	var reply string
 	for {
 		//  Wait for next request from client
 		msg, _ := responder.Recv(0)
 		fmt.Println("Received ", msg)
 
 		//  Make calculations
-		res, _ := calculate(string(msg))
-
+		res, err := calculate(string(msg))
+		if err != nil {
+			reply = fmt.Sprintf("ERROR: %v", err)
+		} else {
+			reply = fmt.Sprintf("%f", res)
+		}
 		//  Send reply back to client
-		reply := fmt.Sprintf("%f", res)
 		responder.Send(reply, 0)
 		fmt.Println("Sent ", reply)
 	}
