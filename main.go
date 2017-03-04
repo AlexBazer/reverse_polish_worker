@@ -25,7 +25,7 @@ func main() {
 		if err != nil {
 			reply = fmt.Sprintf("ERROR: %v", err)
 		} else {
-			reply = fmt.Sprintf("%f", res)
+			reply = fmt.Sprintf("%v", res)
 		}
 
 		socket.Send([]byte(reply), 0)
